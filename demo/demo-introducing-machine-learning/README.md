@@ -26,6 +26,8 @@ Credentials for the rabbitmq-server guest:guest
 
 ## elasticsearch
 
+The demo runs with Elastichsearch 5.6.3
+
 ```bash
 elasticsearch
 ```
@@ -55,7 +57,16 @@ Use the docker-compose.yml from flowable-mysql
 
 ```bash
 MYSQL_DATABASE=demo docker-compose up
-````
+```
+
+drop and create demo db SQL snippet
+
+```sql
+DROP DATABASE `demo`;
+CREATE SCHEMA `demo` DEFAULT CHARACTER SET utf8 ;
+```
+
+or the local mysql install
 
 
 ## Spark
@@ -90,25 +101,53 @@ MAVEN_OPTS="$MAVEN_OPTS -noverify -Xms512m -Xmx1024m -XX:MaxPermSize=512m -Xdebu
 open http://localhost:8888/flowable-modeler/#/processes
 ```
 
-## Steps to reset the demo
+## demo-admin
 
-//TODO
+```bash
+java -jar target/demo-admin-1.5.8.RELEASE.jar
+```
 
+## demo-process
+
+```bash
+java -jar target/demo-process-1.5.8.RELEASE.jar
+```
+
+## demo-listener
+
+```bash
+java -jar target/demo-listener-1.5.8.RELEASE.jar
+```
+
+## Steps to prepare the demo
+
+* Start MySQL
+* Drop & create demo db
+* Start Tomcat and open [idm](http://localhost:8079/flowable-idm/#/user-mgmt), [modeler](http://localhost:8079/flowable-modeler/#/processes) and [task](http://localhost:8079/flowable-task/workflow/#/tasks)
+* Start RabbitMQ and open the RabbitMQ console and purge queue messages
+* Start elasticsearch
+* Start elasticsearch-head, open the elasticsearch-head webapp and delete existing indices
+* Start Spark and open the Spark GUI
+* Start the demo-admin app and open the [Spring Boot Admin console](http://localhost:8080)
+* Start the rest of demo apps:
+  * demo-process
+  * demo-listener
+  * demo-decision-analysis
 
 ## Steps to execute the demo
 
-Start MySQL
+* Import Loan.zip
+* Publish Loan App
+* Start a process
+  * Jose Luis
+  * 5000
+  * Rented
+  * 23
+  * Spanish
+  * 25000
+* The Guidande says "Young, so need further checks"
+* Accept the loan request and Inform Acceptance
+* Start Creating the demo data with 1000 processes. It takes more or less 5 minutes.
 
-Start RabbitMQ and open the RabbitMQ console
 
-Start Spark
 
-Start Idm
-
-Start modeler
-
-Start the demo-admin app
-
-Open the Spring Boot Admin console in http://localhost:8080
-
-Start the demo-process app. The demo-process app appears in the Admin console
