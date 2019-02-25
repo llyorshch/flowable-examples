@@ -17,6 +17,8 @@ public class DemoFlowfestApplication {
     public EngineConfigurationConfigurer<SpringProcessEngineConfiguration> customProcessEngineConfigurer() {
         return engineConfiguration -> {
             engineConfiguration.setValidateFlowable5EntitiesEnabled(false);
+            engineConfiguration.setMailServerHost("localhost");
+            engineConfiguration.setMailServerPort(1025);
         };
     }
 }

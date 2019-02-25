@@ -56,9 +56,9 @@
 			<artifactId>h2</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>org.flowable</groupId>
-			<artifactId>flowable-spring-boot-starter-rest</artifactId>
-			<version>6.4.0-13</version>
+			<groupId>com.flowable.core</groupId>
+			<artifactId>flowable-spring-boot-starter-core-rest</artifactId>
+			<version>3.0.0</version>
 		</dependency>
 		<dependency>
 			<groupId>net.javacrumbs.json-unit</groupId>

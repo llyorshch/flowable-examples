@@ -13,9 +13,28 @@
         <modeler:initiator-can-complete xmlns:modeler="http://flowable.org/modeler"><![CDATA[true]]></modeler:initiator-can-complete>
       </extensionElements>
     </userTask>
+    <serviceTask id="sendMail" flowable:type="mail">
+      <extensionElements>
+        <flowable:field name="from" stringValue="vacationrequest@thecompany.com" />
+        <flowable:field name="to" expression="theuser@thecompany.com" />
+        <flowable:field name="subject" expression="Vacation Request" />
+        <flowable:field name="html">
+          <flowable:expression>
+            <![CDATA[
+              <html>
+                <body>
+                  <h1>Vacation Request</h1><br/><br/>
+                </body>
+              </html>
+            ]]>
+          </flowable:expression>
+        </flowable:field>
+      </extensionElements>
+    </serviceTask>
     <exclusiveGateway id="resendRequestDecision" name="Resend request?"></exclusiveGateway>
     <endEvent id="theEnd2"></endEvent>
-    <sequenceFlow id="flow2" sourceRef="processVacationRequest" targetRef="requestApprovedDecision"></sequenceFlow>
+    <sequenceFlow id="flow2" sourceRef="processVacationRequest" targetRef="sendMail"></sequenceFlow>
+    <sequenceFlow id="flow22" sourceRef="processVacationRequest" targetRef="requestApprovedDecision"></sequenceFlow>
     <sequenceFlow id="flow6" sourceRef="adjustVacationRequestTask" targetRef="resendRequestDecision"></sequenceFlow>
     <sequenceFlow id="flow7" sourceRef="resendRequestDecision" targetRef="processVacationRequest">
       <conditionExpression xsi:type="tFormalExpression"><![CDATA[${resendRequest == 'Yes'}]]></conditionExpression>
@@ -24,7 +43,7 @@
     <startEvent id="request" flowable:initiator="employeeName" isInterrupting="true">
       <signalEventDefinition signalRef="startVacationRequest"></signalEventDefinition>
     </startEvent>
-    <serviceTask id="processVacationRequest" name="Process vacation request" flowable:delegateExpression="${vacationRequestProcessor}">
+    <serviceTask id="processVacationRequest" name="Process vacation request" flowable:delegateExpression="${vacationRequestProcessor}" flowable:async="true" >
       <documentation>${employeeName} would like to take ${numberOfDays} day(s) of vacation (Motivation: ${vacationMotivation}).</documentation>
     </serviceTask>
     <sequenceFlow id="flow3" sourceRef="requestApprovedDecision" targetRef="sendApprovalMail">
@@ -37,70 +56,4 @@
       <conditionExpression xsi:type="tFormalExpression"><![CDATA[${resendRequest == 'No'}]]></conditionExpression>
     </sequenceFlow>
   </process>
-  <bpmndi:BPMNDiagram id="BPMNDiagram_vacationRequest">
-    <bpmndi:BPMNPlane bpmnElement="vacationRequest" id="BPMNPlane_vacationRequest">
-      <bpmndi:BPMNShape bpmnElement="requestApprovedDecision" id="BPMNShape_requestApprovedDecision">
-        <omgdc:Bounds height="40.0" width="40.0" x="230.0" y="160.0"></omgdc:Bounds>
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape bpmnElement="theEnd1" id="BPMNShape_theEnd1">
-        <omgdc:Bounds height="28.0" width="28.0" x="475.0" y="15.0"></omgdc:Bounds>
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape bpmnElement="adjustVacationRequestTask" id="BPMNShape_adjustVacationRequestTask">
-        <omgdc:Bounds height="60.0" width="100.0" x="330.0" y="150.0"></omgdc:Bounds>
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape bpmnElement="resendRequestDecision" id="BPMNShape_resendRequestDecision">
-        <omgdc:Bounds height="40.0" width="40.0" x="470.0" y="233.0"></omgdc:Bounds>
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape bpmnElement="theEnd2" id="BPMNShape_theEnd2">
-        <omgdc:Bounds height="28.0" width="28.0" x="600.0" y="238.0"></omgdc:Bounds>
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape bpmnElement="sendApprovalMail" id="BPMNShape_sendApprovalMail">
-        <omgdc:Bounds height="60.0" width="100.0" x="315.0" y="0.0"></omgdc:Bounds>
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape bpmnElement="request" id="BPMNShape_request">
-        <omgdc:Bounds height="30.0" width="30.0" x="0.0" y="165.0"></omgdc:Bounds>
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape bpmnElement="processVacationRequest" id="BPMNShape_processVacationRequest">
-        <omgdc:Bounds height="60.0" width="100.0" x="75.0" y="150.0"></omgdc:Bounds>
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNEdge bpmnElement="flow1" id="BPMNEdge_flow1">
-        <omgdi:waypoint x="29.949998489957597" y="180.0"></omgdi:waypoint>
-        <omgdi:waypoint x="74.9999999999917" y="180.0"></omgdi:waypoint>
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge bpmnElement="flow2" id="BPMNEdge_flow2">
-        <omgdi:waypoint x="174.95" y="180.0"></omgdi:waypoint>
-        <omgdi:waypoint x="230.0" y="180.0"></omgdi:waypoint>
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge bpmnElement="flow3" id="BPMNEdge_flow3">
-        <omgdi:waypoint x="250.0" y="160.0"></omgdi:waypoint>
-        <omgdi:waypoint x="250.0" y="30.0"></omgdi:waypoint>
-        <omgdi:waypoint x="315.0" y="30.0"></omgdi:waypoint>
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge bpmnElement="flow4" id="BPMNEdge_flow4">
-        <omgdi:waypoint x="414.94999999999976" y="30.0"></omgdi:waypoint>
-        <omgdi:waypoint x="445.0" y="30.0"></omgdi:waypoint>
-        <omgdi:waypoint x="445.0" y="29.0"></omgdi:waypoint>
-        <omgdi:waypoint x="475.0" y="29.0"></omgdi:waypoint>
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge bpmnElement="flow5" id="BPMNEdge_flow5">
-        <omgdi:waypoint x="269.94233282090136" y="180.0"></omgdi:waypoint>
-        <omgdi:waypoint x="329.9999999999902" y="180.0"></omgdi:waypoint>
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge bpmnElement="flow6" id="BPMNEdge_flow6">
-        <omgdi:waypoint x="429.95000000000005" y="180.0"></omgdi:waypoint>
-        <omgdi:waypoint x="490.0" y="180.0"></omgdi:waypoint>
-        <omgdi:waypoint x="490.0" y="233.0"></omgdi:waypoint>
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge bpmnElement="flow7" id="BPMNEdge_flow7">
-        <omgdi:waypoint x="490.280985915493" y="272.65537974683537"></omgdi:waypoint>
-        <omgdi:waypoint x="491.0" y="323.0"></omgdi:waypoint>
-        <omgdi:waypoint x="125.0" y="326.0"></omgdi:waypoint>
-        <omgdi:waypoint x="125.0" y="209.95000000000002"></omgdi:waypoint>
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge bpmnElement="flow8" id="BPMNEdge_flow8">
-        <omgdi:waypoint x="509.7903999999909" y="252.84"></omgdi:waypoint>
-        <omgdi:waypoint x="600.000443100826" y="252.11249654542436"></omgdi:waypoint>
-      </bpmndi:BPMNEdge>
-    </bpmndi:BPMNPlane>
-  </bpmndi:BPMNDiagram>
 </definitions>
