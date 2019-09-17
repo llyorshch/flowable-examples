@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>com.example</groupId>
@@ -10,11 +10,13 @@
 
 	<name>demo-flowfest-own-application</name>
 	<description>Demo project Flowable Spring Boot Application</description>
-
 	<parent>
 		<groupId>org.springframework.boot</groupId>
-		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>2.1.0.RELEASE</version>
+		<!-- We inherit from the dependencies as the starter-parent has some plugin configurations that we don't want to have
+		 such as the main class only our apps have a main class
+		 -->
+		<artifactId>spring-boot-dependencies</artifactId>
+		<version>2.1.5.RELEASE</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 
@@ -22,7 +24,10 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<java.version>1.8</java.version>
-
+		<maven.compiler.source>${java.version}</maven.compiler.source>
+		<maven.compiler.target>${java.version}</maven.compiler.target>
+		<org.flowable.version>6.4.3.4</org.flowable.version>
+		<com.flowable.version>3.3.0</com.flowable.version>
 		<spring-cloud-function.version>2.0.0.RC2</spring-cloud-function.version>
 	</properties>
 
@@ -32,6 +37,14 @@
 				<groupId>org.springframework.cloud</groupId>
 				<artifactId>spring-cloud-function-dependencies</artifactId>
 				<version>${spring-cloud-function.version}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+			<!-- Imports the bill-of-materials POM. -->
+			<dependency>
+				<groupId>com.flowable</groupId>
+				<artifactId>flowable-platform-bom</artifactId>
+				<version>${com.flowable.version}</version>
 				<type>pom</type>
 				<scope>import</scope>
 			</dependency>
@@ -56,10 +69,15 @@
 			<artifactId>h2</artifactId>
 		</dependency>
 		<dependency>
+			<groupId>com.flowable.platform</groupId>
+			<artifactId>flowable-spring-boot-starter-platform-rest</artifactId>
+			<version>${com.flowable.version}</version>
+		</dependency>
+		<!-- <dependency>
 			<groupId>org.flowable</groupId>
 			<artifactId>flowable-spring-boot-starter-rest</artifactId>
-			<version>6.4.0-13</version>
-		</dependency>
+			<version>${org.flowable.version}</version>
+		</dependency> -->
 		<dependency>
 			<groupId>net.javacrumbs.json-unit</groupId>
 			<artifactId>json-unit-assertj</artifactId>
@@ -140,7 +158,4 @@
 			</snapshots>
 		</repository>
 	</repositories>
-
-
-
 </project>
